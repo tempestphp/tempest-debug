@@ -58,12 +58,6 @@ final readonly class Debug
             return;
         }
 
-        $directory = dirname($this->logConfig->debugLogPath);
-
-        if (! is_dir($directory)) {
-            mkdir(directory: $directory, recursive: true);
-        }
-
         $handle = @fopen($this->logConfig->debugLogPath, 'a');
 
         if (! $handle) {
@@ -88,26 +82,13 @@ final readonly class Debug
                 $output = $this->createDump($item);
 
                 fwrite(STDOUT, $output);
-
-                fwrite(STDOUT, $callPath . PHP_EOL);
             } else {
-                echo sprintf(
-                    '<span style="
-                    display:inline-block; 
-                    color: #fff; 
-                    font-family: %s;
-                    padding: 2px 4px;
-                    font-size: 0.8rem;
-                    margin-bottom: -12px;
-                    background: #0071BC;"
-                >%s (%s)</span>',
-                    'Source Code Pro, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace',
-                    $key,
-                    $callPath,
-                );
-
                 VarDumper::dump($item);
             }
+        }
+
+        if (defined('STDOUT')) {
+            fwrite(STDOUT, $callPath . PHP_EOL);
         }
     }
 
